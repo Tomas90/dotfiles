@@ -343,6 +343,38 @@ newwin() {
 }
 
 
+function rsbcup() {
+    newfolder=~/www/cuponation/$1
+    echo "adding application.log file"
+    touch $newfolder/data/application.log
+
+    echo "add log rights"
+     sudo chmod -Rf 777 $newfolder/data
+
+     echo "\n\n------------------------------"
+     echo "moving .ini.template to .ini configuration file"
+     sudo cp $newfolder/configs/application.ini.template $newfolder/configs/application.ini
+
+     echo "linking images"
+     ln -s ~/www/cuponation/images/ $newfolder/frontend/public/images
+
+     echo "make branch default on server"
+     rm intvou
+     ln -s $newfolder intvou
+     
+     echo "DB Update"
+     sudo bash $newfolder/cli/dbupdate.sh
+     
+     echo "Image migration"
+     sudo bash $newfolder/cli/migimages.sh
+     
+     echo "Starting SOLR"
+     sudo bash $newfolder/bin/solr.start
+     
+     echo "Importing SOLR vouchers"
+     sudo bash $newfolder/bin/solr.import.vouchers
+
+}
 
 
 
